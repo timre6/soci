@@ -157,13 +157,18 @@ void oracle_vector_use_type_backend::prepare_for_bind(
             std::size_t maxSize = 0;
             std::size_t const vecSize = size();
             prepare_indicators(vecSize);
+            sizes_.resize(vecSize);
             for (std::size_t i = 0; i != vecSize; ++i)
             {
                 std::size_t sz = v[begin_ + i].length();
-                sizes_.push_back(static_cast<ub2>(sz));
+                sizes_[i] = static_cast<ub2>(sz);
                 maxSize = sz > maxSize ? sz : maxSize;
             }
 
+            if (buf_ != nullptr)
+            {
+                delete[] buf_;
+            }
             buf_ = new char[maxSize * vecSize];
             char *pos = buf_;
             for (std::size_t i = 0; i != vecSize; ++i)
